@@ -42,6 +42,23 @@
 		icon: 'OrderedListOutlined',
 		component: './TodoList',
 	},
+	{
+		path: '/th02',
+		name: 'TH02',
+		icon: 'AppstoreOutlined',
+		routes: [
+			{
+				path: '/th02/oan-tu-ti',
+				name: 'Bài 1 - Oẳn tù tì',
+				component: './TH02/OanTuTi',
+			},
+			{
+				path: '/th02/ngan-hang-cau-hoi',
+				name: 'Bài 2 - Ngân hàng câu hỏi',
+				component: './TH02/NganHangCauHoi',
+			},
+		],
+	},
 
 	// DANH MUC HE THONG
 	// {
