@@ -82,6 +82,7 @@ const AppointmentsPage: React.FC = () => {
 
 	useEffect(() => {
 		if (!selectedServiceId || !selectedStartTime) return;
+
 		const service = services.find((item) => item.id === selectedServiceId);
 		if (!service) return;
 
@@ -89,12 +90,14 @@ const AppointmentsPage: React.FC = () => {
 			endTime: calcEndTime(selectedStartTime, service.duration),
 		});
 	}, [selectedServiceId, selectedStartTime, services, form]);
+
 	const handleOpenCreate = () => {
 		setEditing(null);
 		form.resetFields();
 		form.setFieldsValue({
 			status: 'PENDING',
 			startTime: '09:00',
+			endTime: '',
 		});
 		setOpen(true);
 	};
@@ -110,12 +113,14 @@ const AppointmentsPage: React.FC = () => {
 
 	const handleSubmit = async () => {
 		const values = await form.validateFields();
+
 		try {
 			saveAppointment({
 				...editing,
 				...values,
 				date: values.date.format('YYYY-MM-DD'),
 			});
+
 			message.success(editing ? 'Cập nhật lịch hẹn thành công' : 'Đặt lịch thành công');
 			setOpen(false);
 			setEditing(null);
@@ -128,7 +133,10 @@ const AppointmentsPage: React.FC = () => {
 
 	const updateStatus = (record: Appointment, status: Appointment['status']) => {
 		try {
-			saveAppointment({ ...record, status });
+			saveAppointment({
+				...record,
+				status,
+			});
 			message.success('Cập nhật trạng thái thành công');
 			loadData();
 		} catch (error: any) {
@@ -148,7 +156,7 @@ const AppointmentsPage: React.FC = () => {
 		},
 		{
 			title: 'Nhân viên',
-			render: (_: any, record: Appointment) => employees.find((item) => item.id === record.employeeId)?.name,
+			render: (_: any, record: Appointment) => employees.find((item) => item.id === record.employeeId)?.name || '',
 		},
 		{
 			title: 'Dịch vụ',
@@ -180,29 +188,28 @@ const AppointmentsPage: React.FC = () => {
 			render: (value: Appointment['status']) => <Tag color={getStatusColor(value)}>{getStatusLabel(value)}</Tag>,
 		},
 		{
+			title: 'Ghi chú',
+			dataIndex: 'note',
+			render: (value: string) => value || <span style={{ color: '#999' }}>Không có</span>,
+		},
+		{
 			title: 'Thao tác',
 			render: (_: any, record: Appointment) => (
 				<Space wrap>
-					<Button size='small' icon={<EditOutlined />} onClick={() => handleEdit(record)}>
-						Sửa
+					<Button type='primary' ghost size='small' icon={<EditOutlined />} onClick={() => handleEdit(record)}>
+						Sửa lịch
 					</Button>
-					<Button size='small' onClick={() => updateStatus(record, 'CONFIRMED')}>
-						Xác nhận
-					</Button>
-					<Button size='small' type='primary' ghost onClick={() => updateStatus(record, 'DONE')}>
-						Hoàn thành
-					</Button>
-					<Button size='small' danger onClick={() => updateStatus(record, 'CANCELLED')}>
-						Hủy
-					</Button>
+
 					<Button
-						size='small'
 						danger
+						size='small'
 						icon={<DeleteOutlined />}
 						onClick={() => {
 							Modal.confirm({
 								title: 'Xóa lịch hẹn',
 								content: `Bạn có chắc muốn xóa lịch của khách "${record.customerName}" không?`,
+								okText: 'Xóa',
+								cancelText: 'Hủy',
 								onOk: () => {
 									deleteAppointment(record.id);
 									message.success('Xóa lịch hẹn thành công');
@@ -211,7 +218,33 @@ const AppointmentsPage: React.FC = () => {
 							});
 						}}
 					>
-						Xóa
+						Xóa lịch
+					</Button>
+
+					<Button
+						size='small'
+						onClick={() => updateStatus(record, 'CONFIRMED')}
+						disabled={record.status === 'CONFIRMED'}
+					>
+						Xác nhận
+					</Button>
+
+					<Button
+						size='small'
+						type='primary'
+						onClick={() => updateStatus(record, 'DONE')}
+						disabled={record.status === 'DONE'}
+					>
+						Hoàn thành
+					</Button>
+
+					<Button
+						size='small'
+						danger
+						onClick={() => updateStatus(record, 'CANCELLED')}
+						disabled={record.status === 'CANCELLED'}
+					>
+						Hủy lịch
 					</Button>
 				</Space>
 			),
@@ -258,8 +291,11 @@ const AppointmentsPage: React.FC = () => {
 						<Title level={4} style={{ margin: 0 }}>
 							Quản lý lịch hẹn
 						</Title>
-						<Text type='secondary'>Đặt lịch, kiểm tra trùng lịch, cập nhật trạng thái phục vụ</Text>
+						<Text type='secondary'>
+							Đặt lịch, sửa lịch, xóa lịch, kiểm tra trùng lịch và cập nhật trạng thái phục vụ
+						</Text>
 					</div>
+
 					<Space>
 						<Badge count={summary.pendingAppointments} color='#faad14' />
 						<Button type='primary' icon={<PlusOutlined />} onClick={handleOpenCreate}>
@@ -270,15 +306,20 @@ const AppointmentsPage: React.FC = () => {
 
 				<Divider style={{ marginTop: 0 }} />
 
-				<Table rowKey='id' dataSource={list} columns={columns} scroll={{ x: 1200 }} pagination={{ pageSize: 6 }} />
+				<Table rowKey='id' dataSource={list} columns={columns} scroll={{ x: 1400 }} pagination={{ pageSize: 6 }} />
 			</Card>
 
 			<Modal
 				title={editing ? 'Cập nhật lịch hẹn' : 'Đặt lịch hẹn'}
 				visible={open}
-				onCancel={() => setOpen(false)}
+				onCancel={() => {
+					setOpen(false);
+					setEditing(null);
+					form.resetFields();
+				}}
 				onOk={handleSubmit}
 				okText={editing ? 'Lưu thay đổi' : 'Đặt lịch'}
+				cancelText='Đóng'
 				width={800}
 				destroyOnClose
 			>
@@ -293,6 +334,7 @@ const AppointmentsPage: React.FC = () => {
 								<Input placeholder='Ví dụ: Phạm Minh Khoa' />
 							</Form.Item>
 						</Col>
+
 						<Col span={12}>
 							<Form.Item
 								name='customerPhone'
@@ -350,8 +392,12 @@ const AppointmentsPage: React.FC = () => {
 						</Col>
 
 						<Col span={12}>
-							<Form.Item name='endTime' label='Giờ kết thúc'>
-								<Input disabled placeholder='Tự động tính theo dịch vụ' />
+							<Form.Item
+								name='endTime'
+								label='Giờ kết thúc'
+								rules={[{ required: true, message: 'Giờ kết thúc chưa được tạo' }]}
+							>
+								<Input disabled placeholder='Tự động tính theo thời lượng dịch vụ' />
 							</Form.Item>
 						</Col>
 
