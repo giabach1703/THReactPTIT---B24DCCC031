@@ -50,27 +50,27 @@
 		routes: [
 			{
 				path: '/th03/employees',
-				name: 'NhanVien',
+				name: 'Nhân Viên',
 				component: './TH03/Employees',
 			},
 			{
 				path: '/th03/services',
-				name: 'DichVu',
+				name: 'Dịch Vụ',
 				component: './TH03/Services',
 			},
 			{
 				path: '/th03/appointments',
-				name: 'LichHen',
+				name: 'Đặt Lịch',
 				component: './TH03/Appointments',
 			},
 			{
 				path: '/th03/reviews',
-				name: 'DanhGia',
+				name: 'Đánh Giá',
 				component: './TH03/Reviews',
 			},
 			{
 				path: '/th03/reports',
-				name: 'BaoCao',
+				name: 'Báo Cáo',
 				component: './TH03/Reports',
 			},
 		],
