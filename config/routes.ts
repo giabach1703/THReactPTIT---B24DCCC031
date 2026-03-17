@@ -43,6 +43,39 @@
 		component: './TodoList',
 	},
 
+	{
+		path: '/th03',
+		name: 'TH03',
+		icon: 'CalendarOutlined',
+		routes: [
+			{
+				path: '/th03/employees',
+				name: 'NhanVien',
+				component: './TH03/Employees',
+			},
+			{
+				path: '/th03/services',
+				name: 'DichVu',
+				component: './TH03/Services',
+			},
+			{
+				path: '/th03/appointments',
+				name: 'LichHen',
+				component: './TH03/Appointments',
+			},
+			{
+				path: '/th03/reviews',
+				name: 'DanhGia',
+				component: './TH03/Reviews',
+			},
+			{
+				path: '/th03/reports',
+				name: 'BaoCao',
+				component: './TH03/Reports',
+			},
+		],
+	},
+
 	// DANH MUC HE THONG
 	// {
 	// 	name: 'DanhMuc',
