@@ -43,6 +43,13 @@
 		component: './TodoList',
 	},
 
+	{
+		path: '/product-manage',
+		name: 'ProductManage',
+		component: './ProductManage',
+		layout: false,
+	},
+
 	// DANH MUC HE THONG
 	// {
 	// 	name: 'DanhMuc',
