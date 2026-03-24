@@ -50,6 +50,37 @@
 		layout: false,
 	},
 
+	{
+		path: '/so-van-bang',
+		name: 'Sổ văn bằng',
+		component: './SoVanBang',
+		icon: 'BookOutlined',
+	},
+	{
+		path: '/quyet-dinh-tot-nghiep',
+		name: 'Quyết định tốt nghiệp',
+		component: './QuyetDinhTotNghiep',
+		icon: 'FileTextOutlined',
+	},
+	{
+		path: '/cau-hinh-phu-luc',
+		name: 'Cấu hình phụ lục',
+		component: './CauHinhPhuLuc',
+		icon: 'SettingOutlined',
+	},
+	{
+		path: '/thong-tin-van-bang',
+		name: 'Thông tin văn bằng',
+		component: './ThongTinVanBang',
+		icon: 'IdcardOutlined',
+	},
+	{
+		path: '/tra-cuu-van-bang',
+		name: 'Tra cứu văn bằng',
+		component: './TraCuuVanBang',
+		icon: 'SearchOutlined',
+	},
+
 	// DANH MUC HE THONG
 	// {
 	// 	name: 'DanhMuc',
