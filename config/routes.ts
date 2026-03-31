@@ -43,6 +43,31 @@
 		component: './TodoList',
 	},
 
+	{
+		path: '/club-management',
+		name: 'Quản lý CLB',
+		component: './ClubManagement',
+		icon: 'TeamOutlined',
+	},
+	{
+		path: '/club-applications',
+		name: 'Đơn đăng ký CLB',
+		component: './ClubApplications',
+		icon: 'FormOutlined',
+	},
+	{
+		path: '/club-members',
+		name: 'Thành viên CLB',
+		component: './ClubMembers',
+		icon: 'UsergroupAddOutlined',
+	},
+	{
+		path: '/club-reports',
+		name: 'Báo cáo CLB',
+		component: './ClubReports',
+		icon: 'BarChartOutlined',
+	},
+
 	// DANH MUC HE THONG
 	// {
 	// 	name: 'DanhMuc',
