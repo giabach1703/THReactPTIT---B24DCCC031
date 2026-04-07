@@ -20,10 +20,36 @@
 	// DEFAULT MENU
 	{
 		path: '/dashboard',
-		name: 'Dashboard',
+		name: 'Khám phá điểm đến',
 		component: './TrangChu',
-		icon: 'HomeOutlined',
+		icon: 'EnvironmentOutlined',
 	},
+	{
+		path: '/lich-trinh',
+		name: 'Lịch trình',
+		component: './LichTrinh',
+		icon: 'CalendarOutlined',
+	},
+	{
+		path: '/ngan-sach',
+		name: 'Ngân sách',
+		component: './NganSach',
+		icon: 'PieChartOutlined',
+	},
+	{
+		path: '/admin',
+		name: 'Admin',
+		icon: 'SettingOutlined',
+		routes: [
+			{
+				path: '/admin/diem-den',
+				name: 'Quản lý điểm đến',
+				component: './Admin/DiemDen',
+			},
+		],
+	},
+
+	// GIU LAI NEU BAN VAN MUON DUNG CAC TRANG CU
 	{
 		path: '/gioi-thieu',
 		name: 'About',
@@ -43,35 +69,21 @@
 		component: './TodoList',
 	},
 
-	// DANH MUC HE THONG
-	// {
-	// 	name: 'DanhMuc',
-	// 	path: '/danh-muc',
-	// 	icon: 'copy',
-	// 	routes: [
-	// 		{
-	// 			name: 'ChucVu',
-	// 			path: 'chuc-vu',
-	// 			component: './DanhMuc/ChucVu',
-	// 		},
-	// 	],
-	// },
-
 	{
 		path: '/notification',
 		routes: [
 			{
-				path: './subscribe',
+				path: '/notification/subscribe',
 				exact: true,
 				component: './ThongBao/Subscribe',
 			},
 			{
-				path: './check',
+				path: '/notification/check',
 				exact: true,
 				component: './ThongBao/Check',
 			},
 			{
-				path: './',
+				path: '/notification',
 				exact: true,
 				component: './ThongBao/NotifOneSignal',
 			},
@@ -79,8 +91,10 @@
 		layout: false,
 		hideInMenu: true,
 	},
+
 	{
 		path: '/',
+		redirect: '/dashboard',
 	},
 	{
 		path: '/403',
