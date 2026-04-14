@@ -1,12 +1,10 @@
 import Footer from '@/components/Footer';
 import RightContent from '@/components/RightContent';
 import { notification } from 'antd';
-import 'moment/locale/vi';
 import type { RequestConfig, RunTimeLayoutConfig } from 'umi';
 import { getIntl, getLocale, history } from 'umi';
 import type { RequestOptionsInit, ResponseError } from 'umi-request';
 import ErrorBoundary from './components/ErrorBoundary';
-// import LoadingPage from './components/Loading';
 import { OIDCBounder } from './components/OIDCBounder';
 import { unCheckPermissionPaths } from './components/OIDCBounder/constant';
 import OneSignalBounder from './components/OneSignalBounder';
@@ -17,27 +15,18 @@ import type { IInitialState } from './services/base/typing';
 import './styles/global.less';
 import { currentRole } from './utils/ip';
 
-/**  loading */
 export const initialStateConfig = {
 	loading: <></>,
 };
 
-/**
- * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
- * // Tobe removed
- * */
 export async function getInitialState(): Promise<IInitialState> {
 	return {
 		permissionLoading: true,
 	};
 }
 
-// Tobe removed
-const authHeaderInterceptor = (url: string, options: RequestOptionsInit) => ({});
+const authHeaderInterceptor = (_url: string, _options: RequestOptionsInit) => ({});
 
-/**
- * @see https://beta-pro.ant.design/docs/request-cn
- */
 export const request: RequestConfig = {
 	errorHandler: (error: ResponseError) => {
 		const { messages } = getIntl(getLocale());
@@ -48,6 +37,7 @@ export const request: RequestConfig = {
 			const requestErrorMessage = messages['app.request.error'];
 			const errorMessage = `${requestErrorMessage} ${status}: ${url}`;
 			const errorDescription = messages[`app.request.${status}`] || statusText;
+
 			notification.error({
 				message: errorMessage,
 				description: errorDescription,
@@ -60,12 +50,45 @@ export const request: RequestConfig = {
 				message: 'Bạn hãy thử lại sau',
 			});
 		}
+
 		throw error;
 	},
 	requestInterceptors: [authHeaderInterceptor],
 };
 
-// ProLayout  https://procomponents.ant.design/components/layout
+const ONE_SIGNAL_ALLOWED_ORIGIN = 'https://sinhvien.hvpnvn.edu.vn';
+
+const canUseOneSignal = () => {
+	if (typeof window === 'undefined') return false;
+	return window.location.origin === ONE_SIGNAL_ALLOWED_ORIGIN;
+};
+
+const normalizeMenuData = (menuData: any[] = [], parentKey = 'menu'): any[] => {
+	return menuData.reduce((result: any[], item: any, index: number) => {
+		if (!item) return result;
+		if (item.hideInMenu || item.redirect) return result;
+
+		const rawChildren = Array.isArray(item.children) ? item.children : Array.isArray(item.routes) ? item.routes : [];
+
+		const children = normalizeMenuData(rawChildren, `${parentKey}-${index}`);
+		const key = item.path || item.name || `${parentKey}-${index}`;
+
+		const nextItem: any = {
+			...item,
+			key,
+		};
+
+		if (children.length > 0) {
+			nextItem.children = children;
+		} else {
+			delete nextItem.children;
+		}
+
+		result.push(nextItem);
+		return result;
+	}, []);
+};
+
 export const layout: RunTimeLayoutConfig = ({ initialState }) => {
 	return {
 		unAccessible: (
@@ -75,10 +98,10 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
 				</TechnicalSupportBounder>
 			</OIDCBounder>
 		),
+
 		noFound: <NotFoundContent />,
 		rightContentRender: () => <RightContent />,
 		disableContentMargin: false,
-
 		footerRender: () => <Footer />,
 
 		onPageChange: () => {
@@ -93,35 +116,20 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
 					currentRole &&
 					initialState?.authorizedPermissions?.length &&
 					!initialState?.authorizedPermissions?.find((item) => item.rsname === currentRole)
-				)
+				) {
 					history.replace('/403');
+				}
 			}
 		},
 
-		menuItemRender: (item: any, dom: any) => (
-			<a
-				className='not-underline'
-				key={item?.path}
-				href={item?.path}
-				onClick={(e) => {
-					e.preventDefault();
-					history.push(item?.path ?? '/');
-				}}
-				style={{ display: 'block' }}
-			>
-				{dom}
-			</a>
-		),
+		menuDataRender: (menuData) => normalizeMenuData(menuData as any[]),
 
 		childrenRender: (dom) => (
 			<OIDCBounder>
-				<ErrorBoundary>
-					{/* <TechnicalSupportBounder> */}
-					<OneSignalBounder>{dom}</OneSignalBounder>
-					{/* </TechnicalSupportBounder> */}
-				</ErrorBoundary>
+				<ErrorBoundary>{canUseOneSignal() ? <OneSignalBounder>{dom}</OneSignalBounder> : dom}</ErrorBoundary>
 			</OIDCBounder>
 		),
+
 		menuHeaderRender: undefined,
 		...initialState?.settings,
 	};
