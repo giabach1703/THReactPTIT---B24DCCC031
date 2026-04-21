@@ -80,6 +80,42 @@
 		hideInMenu: true,
 	},
 	{
+		path: '/blog',
+		name: 'Blog',
+		icon: 'ReadOutlined',
+		routes: [
+			{
+				path: '/blog',
+				redirect: '/blog/home',
+			},
+			{
+				path: '/blog/home',
+				name: 'DanhSach',
+				component: './Blog/List',
+			},
+			{
+				path: '/blog/about',
+				name: 'GioiThieu',
+				component: './Blog/About',
+			},
+			{
+				path: '/blog/admin/posts',
+				name: 'QuanLyBaiViet',
+				component: './Blog/AdminPost',
+			},
+			{
+				path: '/blog/admin/tags',
+				name: 'QuanLyThe',
+				component: './Blog/AdminTag',
+			},
+			{
+				path: '/blog/:slug',
+				hideInMenu: true,
+				component: './Blog/Detail',
+			},
+		],
+	},
+	{
 		path: '/',
 	},
 	{
