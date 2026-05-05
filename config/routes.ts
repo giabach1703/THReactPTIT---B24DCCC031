@@ -43,6 +43,33 @@
 		component: './TodoList',
 	},
 
+	{
+		path: '/cong-viec',
+		name: 'Quản lý công việc',
+		icon: 'ProjectOutlined',
+		routes: [
+			{
+				path: '/cong-viec',
+				redirect: '/cong-viec/dashboard',
+			},
+			{
+				path: '/cong-viec/dashboard',
+				name: 'Dashboard',
+				component: './CongViec/Dashboard',
+			},
+			{
+				path: '/cong-viec/kanban',
+				name: 'Kanban Board',
+				component: './CongViec/Kanban',
+			},
+			{
+				path: '/cong-viec/danh-sach',
+				name: 'Danh sách task',
+				component: './CongViec/DanhSach',
+			},
+		],
+	},
+
 	// DANH MUC HE THONG
 	// {
 	// 	name: 'DanhMuc',
